@@ -51,7 +51,11 @@ function getRows(step, group, answers) {
       embeddedRows.push([field.otherField.label, productForm.productFormOther]);
     }
 
-    rows.splice(afterIndex >= 0 ? afterIndex + 1 : rows.length, 0, ...embeddedRows);
+    rows.splice(
+      afterIndex >= 0 ? afterIndex + 1 : rows.length,
+      0,
+      ...embeddedRows,
+    );
   }
 
   return rows;

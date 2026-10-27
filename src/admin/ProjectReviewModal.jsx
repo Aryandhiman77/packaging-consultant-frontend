@@ -46,7 +46,11 @@ function getRows(step, group, answers) {
       embeddedRows.push([field.otherField.label, productForm.productFormOther]);
     }
 
-    rows.splice(afterIndex >= 0 ? afterIndex + 1 : rows.length, 0, ...embeddedRows);
+    rows.splice(
+      afterIndex >= 0 ? afterIndex + 1 : rows.length,
+      0,
+      ...embeddedRows,
+    );
   }
 
   return rows;
@@ -65,6 +69,7 @@ export default function ProjectReviewModal({ id, onClose, onUpdated }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [downloading, setDownloading] = useState("");
+  const [opening, setOpening] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
@@ -162,6 +167,30 @@ export default function ProjectReviewModal({ id, onClose, onUpdated }) {
     }
   };
 
+  const openFile = async (file) => {
+    const newTab = window.open("about:blank", "_blank");
+    if (!newTab) {
+      setError("Allow pop-ups to open this attachment in a new tab.");
+      return;
+    }
+
+    newTab.opener = null;
+    setOpening(file.fileId);
+    setError("");
+
+    try {
+      const blob = await downloadProjectReviewFile(id, file.fileId);
+      const url = URL.createObjectURL(blob);
+      newTab.location.href = url;
+      window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+    } catch (err) {
+      newTab.close();
+      setError(err.message);
+    } finally {
+      setOpening("");
+    }
+  };
+
   return (
     <div
       className={`fixed inset-0 z-[250] flex items-center justify-center bg-slate-950/70 p-0 backdrop-blur-sm transition-opacity duration-200 sm:p-5 ${
@@ -218,7 +247,10 @@ export default function ProjectReviewModal({ id, onClose, onUpdated }) {
           )}
 
           {error && (
-            <p role="alert" className="mb-5 rounded-xl bg-red-50 p-4 text-sm text-red-700">
+            <p
+              role="alert"
+              className="mb-5 rounded-xl bg-red-50 p-4 text-sm text-red-700"
+            >
               {error}
             </p>
           )}
@@ -240,9 +272,15 @@ export default function ProjectReviewModal({ id, onClose, onUpdated }) {
                   <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-white/[.09] dark:bg-[#111a27]">
                     <h3 className="text-lg font-bold">Contact Information</h3>
                     <div className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
-                      <p className="break-all"><strong>Email:</strong> {review.email}</p>
-                      <p><strong>Company:</strong> {review.company || "-"}</p>
-                      <p><strong>Phone:</strong> {review.phone || "-"}</p>
+                      <p className="break-all">
+                        <strong>Email:</strong> {review.email}
+                      </p>
+                      <p>
+                        <strong>Company:</strong> {review.company || "-"}
+                      </p>
+                      <p>
+                        <strong>Phone:</strong> {review.phone || "-"}
+                      </p>
                     </div>
                   </section>
 
@@ -263,13 +301,23 @@ export default function ProjectReviewModal({ id, onClose, onUpdated }) {
                       >
                         <h3 className="text-lg font-bold">{step.title}</h3>
                         {populatedGroups.map(({ group, rows }) => (
-                          <div key={group.heading} className="mt-4 border-t border-slate-200 pt-4 dark:border-white/[.09]">
+                          <div
+                            key={group.heading}
+                            className="mt-4 border-t border-slate-200 pt-4 dark:border-white/[.09]"
+                          >
                             <h4 className="font-bold">{group.heading}</h4>
                             <dl className="mt-3 space-y-3">
                               {rows.map(([label, value]) => (
-                                <div key={label} className="grid gap-1 sm:grid-cols-2">
-                                  <dt className="text-sm text-slate-500">{label}</dt>
-                                  <dd className="break-words text-sm">{String(value)}</dd>
+                                <div
+                                  key={label}
+                                  className="grid gap-1 sm:grid-cols-2"
+                                >
+                                  <dt className="text-sm text-slate-500">
+                                    {label}
+                                  </dt>
+                                  <dd className="break-words text-sm">
+                                    {String(value)}
+                                  </dd>
                                 </div>
                               ))}
                             </dl>
@@ -282,19 +330,35 @@ export default function ProjectReviewModal({ id, onClose, onUpdated }) {
                   <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-white/[.09] dark:bg-[#111a27]">
                     <h3 className="text-lg font-bold">Attachments</h3>
                     {!review.attachments?.length && (
-                      <p className="mt-3 text-sm text-slate-500">No files attached.</p>
+                      <p className="mt-3 text-sm text-slate-500">
+                        No files attached.
+                      </p>
                     )}
                     <ul className="mt-4 space-y-3">
                       {(review.attachments || []).map((file) => (
-                        <li key={file.fileId} className="flex items-center justify-between gap-3 border-b border-slate-200 pb-3 dark:border-white/[.09]">
-                          <span className="break-all text-sm">{file.originalName}</span>
+                        <li
+                          key={file.fileId}
+                          className="flex items-center justify-between gap-3 border-b border-slate-200 pb-3 dark:border-white/[.09]"
+                        >
+                          <button
+                            type="button"
+                            disabled={Boolean(opening)}
+                            onClick={() => openFile(file)}
+                            className="break-all text-left text-sm text-red-700 underline decoration-transparent underline-offset-4 transition hover:decoration-current disabled:opacity-50 dark:text-red-300"
+                          >
+                            {opening === file.fileId
+                              ? "Opening..."
+                              : file.originalName}
+                          </button>
                           <button
                             type="button"
                             disabled={Boolean(downloading)}
                             onClick={() => downloadFile(file)}
-                            className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold transition hover:border-red-500 hover:text-red-600 disabled:opacity-40 dark:border-white/[.15]"
+                            className="shrink-0 rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold transition hover:border-red-500 hover:text-red-600 disabled:opacity-40 dark:border-white/[.15]"
                           >
-                            {downloading === file.fileId ? "Downloading..." : "Download"}
+                            {downloading === file.fileId
+                              ? "Downloading..."
+                              : "Download"}
                           </button>
                         </li>
                       ))}
@@ -306,20 +370,26 @@ export default function ProjectReviewModal({ id, onClose, onUpdated }) {
                   <h3 className="text-lg font-bold">Manage Review</h3>
                   <form onSubmit={saveChanges} className="mt-5 space-y-5">
                     <label className="block">
-                      <span className="block text-sm font-bold">Review Status</span>
+                      <span className="block text-sm font-bold">
+                        Review Status
+                      </span>
                       <select
                         value={status}
                         onChange={(event) => setStatus(event.target.value)}
                         className="mt-2 w-full rounded-lg border border-slate-300 bg-white p-3 dark:border-white/[.12] dark:bg-[#0b1018]"
                       >
                         {statuses.map((item) => (
-                          <option key={item} value={item}>{statusLabel(item)}</option>
+                          <option key={item} value={item}>
+                            {statusLabel(item)}
+                          </option>
                         ))}
                       </select>
                     </label>
 
                     <label className="block">
-                      <span className="block text-sm font-bold">Admin Notes</span>
+                      <span className="block text-sm font-bold">
+                        Admin Notes
+                      </span>
                       <textarea
                         rows={7}
                         maxLength={5000}
@@ -338,7 +408,10 @@ export default function ProjectReviewModal({ id, onClose, onUpdated }) {
                     </button>
 
                     {message && (
-                      <p role="status" className="text-sm font-semibold text-green-700 dark:text-green-400">
+                      <p
+                        role="status"
+                        className="text-sm font-semibold text-green-700 dark:text-green-400"
+                      >
                         {message}
                       </p>
                     )}
