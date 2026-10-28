@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { FaFacebookF, FaLinkedinIn, FaXTwitter, FaYoutube } from 'react-icons/fa6'
 import { useApi } from '../context/ApiContext'
 import { artTemplatesPath } from '../data/packagingServices'
 import { defaultSocialLinks, externalLinkProps, resolveSocialLinks } from '../data/socialLinks'
@@ -40,10 +41,10 @@ function LinkList({ links }) {
 function SocialLinks({ links }) {
   return (
     <div className="footer__socials" aria-label="Social media links">
-      <a className="social-button social-button--x" href={links.x} {...externalLinkProps(links.x)} aria-label="X">X</a>
-      <a className="social-button social-button--facebook" href={links.facebook} {...externalLinkProps(links.facebook)} aria-label="Facebook">f</a>
-      <a className="social-button social-button--youtube" href={links.youtube} {...externalLinkProps(links.youtube)} aria-label="YouTube"><i /></a>
-      <a className="social-button social-button--linkedin" href={links.linkedin} {...externalLinkProps(links.linkedin)} aria-label="LinkedIn">in</a>
+      <a className="social-button social-button--x" href={links.x} {...externalLinkProps(links.x)} aria-label="X"><FaXTwitter aria-hidden="true" /></a>
+      <a className="social-button social-button--facebook" href={links.facebook} {...externalLinkProps(links.facebook)} aria-label="Facebook"><FaFacebookF aria-hidden="true" /></a>
+      <a className="social-button social-button--youtube" href={links.youtube} {...externalLinkProps(links.youtube)} aria-label="YouTube"><FaYoutube aria-hidden="true" /></a>
+      <a className="social-button social-button--linkedin" href={links.linkedin} {...externalLinkProps(links.linkedin)} aria-label="LinkedIn"><FaLinkedinIn aria-hidden="true" /></a>
     </div>
   )
 }
@@ -62,7 +63,7 @@ export default function Footer() {
   }, [getPublicNavigation])
 
   return (
-    <footer className="footer" id="contact">
+    <footer className="footer mx-auto w-full max-w-[100vw]" id="contact">
       <div className="footer__content">
         <address className="footer__contact">
           <span>Mailing Address:</span>

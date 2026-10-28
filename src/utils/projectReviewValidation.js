@@ -12,20 +12,7 @@ export function reviewFieldId(key) {
 }
 
 export function serializeProjectReviewForApi(values) {
-  const payload = { ...values };
-  const productForm = String(payload.productForm || "").trim();
-  const specified = String(payload.productFormOther || "").trim();
-
-  if (productForm) {
-    payload[LEGACY_PRODUCT_FORM_KEY] =
-      productForm === "Other" && specified
-        ? `Other: ${specified}`
-        : productForm;
-  }
-
-  delete payload.productForm;
-  delete payload.productFormOther;
-  return payload;
+  return { ...values };
 }
 
 export function readProductFormAnswers(answers = {}) {
@@ -60,6 +47,14 @@ export function reviewFieldsAreRelated(firstKey, secondKey) {
 
 export function locateReviewField(rawKey) {
   const key = String(rawKey || "").replace(/^review\./, "");
+
+  if (key === LEGACY_PRODUCT_FORM_KEY) {
+    return {
+      slug: "product-marketplace",
+      key: "productForm",
+      label: "Product form",
+    };
+  }
 
   for (const step of projectReviewSteps) {
     for (const group of step.groups) {

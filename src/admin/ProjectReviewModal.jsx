@@ -33,9 +33,9 @@ function getRows(step, group, answers) {
       ([, value]) => value !== undefined && value !== null && value !== "",
     );
 
-  if (group.embeddedRadio && answers[group.embeddedRadio.name]) {
+  const productForm = readProductFormAnswers(answers);
+  if (group.embeddedRadio && productForm.productForm) {
     const field = group.embeddedRadio;
-    const productForm = readProductFormAnswers(answers);
     const afterIndex = rows.findIndex(([label]) => label === field.afterField);
     const embeddedRows = [[field.label, productForm.productForm]];
 

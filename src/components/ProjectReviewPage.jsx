@@ -355,7 +355,7 @@ function ReviewGroup({
   fieldError,
 }) {
   return (
-    <section className="mt-6 border border-[#e2d8d0] bg-[#faf8f6]/90 p-5 sm:rounded-2xl sm:p-7">
+    <section className="mt-8 border-t border-[#cfc7c1] pt-6">
       <h2 className="mb-4 text-lg font-black text-[#2b201a]">
         {group.heading}
       </h2>
@@ -665,6 +665,7 @@ function ReviewDetail({ step }) {
       return;
     }
 
+    setFieldError(null);
     setSubmitting(true);
     setUploadProgress(0);
     setNotice(null);
@@ -774,57 +775,39 @@ function ReviewDetail({ step }) {
   };
 
   return (
-    <main className="relative overflow-x-clip bg-[#f5f1ed] text-[#30231c]">
-      <div className="absolute inset-x-0 top-0 h-72 bg-[linear-gradient(120deg,#17110f_0%,#39271f_62%,#7e292c_100%)]" />
+    <main className="relative isolate mx-auto min-h-[620px] w-full max-w-[100vw] overflow-hidden border-x border-[#8d8985] bg-white text-[#201d1b]">
+      <ContentWatermark />
 
-      <img
-        className="pointer-events-none absolute top-16 right-[-5rem] w-[31rem] opacity-[.075]"
-        src="/assets/site/header-mark-clean.png"
-        alt=""
-      />
+      <div className="relative z-10 mx-auto w-full max-w-[100vw] px-6 py-10 sm:px-12 sm:py-14 lg:px-[7%] lg:py-16">
+        <article>
+            {step.slug === "starting-point" && (
+              <div className="space-y-4 text-[17px] leading-8 text-[#4b3a30]">
+                {step.intro.map((paragraph, index) => (
+                  <p key={paragraph} className={index === 0 ? "font-black text-[#201d1b]" : ""}>
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            )}
 
-      <div className="relative mx-auto max-w-7xl px-0 py-10 sm:px-8 lg:px-12 lg:py-14">
-        <nav
-          className="flex flex-wrap items-center gap-2 px-4 text-xs font-bold text-white/60 sm:px-0"
-          aria-label="Breadcrumb"
-        >
-          <Link
-            to="/"
-            className="!text-white/75 no-underline hover:!text-white"
-          >
-            Home
-          </Link>
-          <span>/</span>
-          <span className="text-white/75">Project Review</span>
-          <span>/</span>
-          <span className="text-white">{step.title}</span>
-        </nav>
-
-        <div className="mt-7 grid items-start gap-0 sm:gap-7 lg:grid-cols-[minmax(0,1fr)_300px]">
-          <article className="relative overflow-hidden border-0 bg-white shadow-[0_28px_80px_rgba(35,20,12,.24)] sm:rounded-[1.75rem] sm:border sm:border-white/30">
-            <ContentWatermark repeat />
-
-            <header className="relative z-10 overflow-hidden bg-[linear-gradient(135deg,#fff_0%,#f7f3ef_60%,#eadfd7_100%)] px-6 py-9 sm:px-10 sm:py-12">
-              <div className="absolute top-0 left-0 h-1.5 w-full bg-[#e51f32]" />
-              <p className="text-xs font-black tracking-[.2em] text-[#d91f31] uppercase">
-                Project Review · Step {stepIndex + 1} of{" "}
-                {projectReviewSteps.length}
+            <header className={step.slug === "starting-point" ? "mt-7" : ""}>
+              <p className="text-[clamp(1rem,1.2vw,1.15rem)] font-bold">
+                Step {stepIndex + 1} - {step.title}
               </p>
-              <h1 className="mt-3 max-w-4xl font-serif text-3xl leading-tight font-bold tracking-tight text-[#211914] sm:text-5xl">
-                {step.title}
-              </h1>
             </header>
 
             <form
-              className="relative z-10 px-6 py-8 sm:px-10 sm:py-10"
+              className="mt-7"
               onSubmit={submitReview}
               noValidate
             >
-              <div className="space-y-4 text-[17px] leading-8 text-[#4b3a30]">
-                {step.intro.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-              </div>
+              {step.slug !== "starting-point" && (
+                <div className="space-y-4 text-[17px] leading-8 text-[#4b3a30]">
+                  {step.intro.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+              )}
 
               {step.groups.map((group) => (
                 <ReviewGroup
@@ -979,36 +962,6 @@ function ReviewDetail({ step }) {
               </div>
             </form>
           </article>
-
-          <aside
-            className="self-start border-0 bg-[#1f1713]/95 p-4 text-white shadow-[0_20px_50px_rgba(28,17,11,.22)] backdrop-blur sm:rounded-2xl sm:border sm:border-white/20 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto"
-            aria-label="Project Review steps"
-          >
-            <h2 className="px-3 pt-2 pb-3 text-xs font-black tracking-[.18em] text-[#ef9da6] uppercase">
-              Project Review
-            </h2>
-
-            <nav className="grid gap-1">
-              {projectReviewSteps.map((item, index) => (
-                <Link
-                  key={item.slug}
-                  to={`/project-review/${item.slug}`}
-                  onClick={scrollPageTop}
-                  className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold no-underline transition ${
-                    item.slug === step.slug
-                      ? "bg-[#e51f32] !text-white"
-                      : "!text-white/75 hover:bg-white/10 hover:!text-white"
-                  }`}
-                >
-                  <span className="text-[10px] text-white/45">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  {item.title}
-                </Link>
-              ))}
-            </nav>
-          </aside>
-        </div>
       </div>
 
       {receipt && (

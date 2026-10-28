@@ -1,6 +1,6 @@
 export default function MainContent() {
   return (
-    <main>
+    <main className="mx-auto w-full max-w-[100vw]">
       <section className="intro" id="about">
         <img className="intro__watermark" src="/assets/site/brand-mark.png" alt="" aria-hidden="true" />
         <div className="intro__copy">

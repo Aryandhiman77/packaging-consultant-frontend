@@ -1,4 +1,10 @@
 import { useEffect, useState } from "react";
+import {
+  FaFacebookF,
+  FaLinkedinIn,
+  FaXTwitter,
+  FaYoutube,
+} from "react-icons/fa6";
 import { useApi } from "../context/ApiContext";
 import { navigation as fallbackNavigation } from "../data/navigation";
 import { resolveNavigation } from "../data/resolveNavigation";
@@ -24,7 +30,7 @@ function SocialLinks({ links, mobile = false }) {
       className={
         mobile
           ? "flex items-center justify-center gap-3 bg-white/[.035] px-[17px] py-[15px]"
-          : "absolute right-[3.8%] bottom-[5.9%] z-[3] hidden items-center gap-[.75vw] lg:flex"
+          : "absolute right-[3.8%] bottom-[5.9%] z-[3] hidden items-center gap-[clamp(7px,.75vw,10px)] lg:flex"
       }
       aria-label="Social media links"
     >
@@ -34,7 +40,7 @@ function SocialLinks({ links, mobile = false }) {
         {...externalLinkProps(links.x)}
         aria-label="X"
       >
-        X
+        <FaXTwitter aria-hidden="true" />
       </a>
       <a
         className="header-social header-social--facebook"
@@ -42,7 +48,7 @@ function SocialLinks({ links, mobile = false }) {
         {...externalLinkProps(links.facebook)}
         aria-label="Facebook"
       >
-        f
+        <FaFacebookF aria-hidden="true" />
       </a>
       <a
         className="header-social header-social--youtube"
@@ -50,7 +56,7 @@ function SocialLinks({ links, mobile = false }) {
         {...externalLinkProps(links.youtube)}
         aria-label="YouTube"
       >
-        <i />
+        <FaYoutube aria-hidden="true" />
       </a>
       <a
         className="header-social header-social--linkedin"
@@ -58,7 +64,7 @@ function SocialLinks({ links, mobile = false }) {
         {...externalLinkProps(links.linkedin)}
         aria-label="LinkedIn"
       >
-        in
+        <FaLinkedinIn aria-hidden="true" />
       </a>
     </div>
   );
@@ -90,7 +96,7 @@ function DesktopNavigation({ items }) {
             {hasChildren ? (
               <button
                 type="button"
-                className="flex h-full items-center gap-[.28vw] border-0 bg-transparent px-[.72vw] pt-[.28vw] pb-[.25vw] font-sans text-[clamp(13px,1.3vw,26px)] leading-none text-[#111] transition-colors hover:bg-[#e8e4e0] focus-visible:bg-[#e8e4e0]"
+                className="flex h-full items-center gap-[clamp(3px,.28vw,4px)] border-0 bg-transparent px-[clamp(7px,.72vw,10px)] pt-[clamp(3px,.28vw,4px)] pb-[clamp(3px,.25vw,4px)] font-sans text-[clamp(13px,1.3vw,17px)] leading-none text-[#111] transition-colors hover:bg-[#e8e4e0] focus-visible:bg-[#e8e4e0]"
                 aria-haspopup="menu"
                 aria-label={`${item.label} menu`}
               >
@@ -98,7 +104,7 @@ function DesktopNavigation({ items }) {
               </button>
             ) : (
               <a
-                className="flex h-full items-center gap-[.28vw] px-[.72vw] pt-[.28vw] pb-[.25vw] font-sans text-[clamp(13px,1.3vw,26px)] leading-none !text-[#111] no-underline transition-colors hover:bg-[#e8e4e0] focus-visible:bg-[#e8e4e0]"
+                className="flex h-full items-center gap-[clamp(3px,.28vw,4px)] px-[clamp(7px,.72vw,10px)] pt-[clamp(3px,.28vw,4px)] pb-[clamp(3px,.25vw,4px)] font-sans text-[clamp(13px,1.3vw,17px)] leading-none !text-[#111] no-underline transition-colors hover:bg-[#e8e4e0] focus-visible:bg-[#e8e4e0]"
                 href={item.link}
               >
                 {label}
@@ -125,7 +131,7 @@ function DesktopNavigation({ items }) {
                         : undefined
                     }
                     role="menuitem"
-                    className="block whitespace-normal px-4 py-2.5 text-[clamp(12px,1vw,17px)] leading-[1.18] font-bold !text-[#171717] no-underline hover:bg-[#eeeae7] focus-visible:bg-[#eeeae7]"
+                    className="block whitespace-normal px-4 py-2.5 text-[clamp(12px,1vw,15px)] leading-[1.18] font-bold !text-[#171717] no-underline hover:bg-[#eeeae7] focus-visible:bg-[#eeeae7]"
                   >
                     {child.label}
                   </a>
@@ -249,28 +255,21 @@ export default function HeaderHero({ compact = false }) {
   }, [getPublicNavigation]);
 
   return (
-    <header className="hero relative z-[100]" id="home">
-      <div
-        className={`relative z-[5] grid h-24 w-full grid-cols-[52px_minmax(0,1fr)_clamp(72px,16vw,120px)] overflow-visible lg:block lg:h-[12.68vw] lg:min-h-[114px] ${
-          compact
-            ? "bg-[#e9e9e9] shadow-[inset_0_5px_7px_rgba(0,0,0,.2)]"
-            : "bg-[url('/assets/hero/meeting.png')] bg-cover bg-top"
-        }`}
-      >
+    <header
+      className="hero relative z-[100] mx-auto w-full max-w-[100vw]"
+      id="home"
+    >
+      <div className="relative z-[5] grid h-24 w-full grid-cols-[52px_minmax(0,1fr)_clamp(72px,16vw,120px)] overflow-visible bg-[url('/assets/hero/meeting.png')] bg-cover bg-top lg:block lg:h-[clamp(114px,12.68vw,162px)]">
         <div
-          className={`pointer-events-none absolute inset-0 ${
-            compact
-              ? "bg-[linear-gradient(180deg,rgba(190,190,190,.72)_0%,rgba(226,226,226,.93)_32%,rgba(249,249,249,.98)_100%)]"
-              : "bg-[linear-gradient(90deg,rgba(245,242,238,.92),rgba(226,235,239,.84))] backdrop-blur-[2px] lg:bg-[linear-gradient(90deg,rgba(245,242,238,.88),rgba(226,235,239,.74))]"
-          }`}
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(245,242,238,.92),rgba(226,235,239,.84))] backdrop-blur-[2px] lg:bg-[linear-gradient(90deg,rgba(245,242,238,.88),rgba(226,235,239,.74))]"
           aria-hidden="true"
         />
 
         <div className="relative z-[1] col-start-2 row-start-1 flex h-full min-w-0 flex-col justify-center overflow-hidden px-1.5 lg:absolute lg:left-[3.1%] lg:top-[9%] lg:block lg:h-auto lg:w-[73%] lg:overflow-visible lg:p-0">
-          <p className="m-0 whitespace-nowrap font-serif text-[clamp(12px,3.7vw,30px)] leading-[.96] font-semibold tracking-[-.03em] text-[#f8f7f4] [-webkit-text-stroke:.6px_#181818] [font-variant:small-caps] [text-shadow:2px_2px_1px_rgba(0,0,0,.67),-1px_-1px_#fff] lg:text-[clamp(43px,5.25vw,108px)] lg:leading-[.91] lg:tracking-[.4px] lg:[-webkit-text-stroke:1px_#181818] lg:[text-shadow:3px_4px_2px_rgba(0,0,0,.72),-1px_-1px_#fff]">
+          <p className="m-0 whitespace-nowrap font-serif text-[clamp(12px,3.7vw,30px)] leading-[.96] font-semibold tracking-[-.03em] text-[#f8f7f4] [-webkit-text-stroke:.6px_#181818] [font-variant:small-caps] [text-shadow:2px_2px_1px_rgba(0,0,0,.67),-1px_-1px_#fff] lg:text-[clamp(43px,5.25vw,67px)] lg:leading-[.91] lg:tracking-[.4px] lg:[-webkit-text-stroke:1px_#181818] lg:[text-shadow:3px_4px_2px_rgba(0,0,0,.72),-1px_-1px_#fff]">
             Packaging Consultants USA
           </p>
-          <p className="mt-2 ml-0.5 text-[clamp(8.5px,2.2vw,13px)] leading-[1.08] font-black tracking-[-.2px] text-[#161616] italic [text-shadow:1px_1px_rgba(255,255,255,.78)] lg:mt-[.55vw] lg:ml-[1.2%] lg:whitespace-nowrap lg:text-[clamp(18px,2.18vw,45px)] lg:leading-none lg:tracking-[-.7px]">
+          <p className="mt-2 ml-0.5 text-[clamp(8.5px,2.2vw,13px)] leading-[1.08] font-black tracking-[-.2px] text-[#161616] italic [text-shadow:1px_1px_rgba(255,255,255,.78)] lg:mt-[clamp(6px,.55vw,8px)] lg:ml-[1.2%] lg:whitespace-nowrap lg:text-[clamp(18px,2.18vw,28px)] lg:leading-none lg:tracking-[-.7px]">
             Packaging Design, Manufacturing, Supply, and Launch Consulting
           </p>
         </div>
