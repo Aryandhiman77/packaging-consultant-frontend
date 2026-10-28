@@ -254,11 +254,15 @@ export default function HeaderHero({ compact = false }) {
       className="hero relative z-[100] mx-auto w-full max-w-[100vw]"
       id="home"
     >
-      <div className="relative z-[5] grid h-24 w-full grid-cols-[52px_minmax(0,1fr)_clamp(72px,16vw,120px)] overflow-visible bg-[url('/assets/hero/meeting.png')] bg-cover bg-top lg:block lg:h-[clamp(114px,12.68vw,162px)]">
-        <div
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(245,242,238,.92),rgba(226,235,239,.84))] backdrop-blur-[2px] lg:bg-[linear-gradient(90deg,rgba(245,242,238,.88),rgba(226,235,239,.74))]"
-          aria-hidden="true"
-        />
+      <div
+        className={`relative z-[5] grid h-24 w-full grid-cols-[52px_minmax(0,1fr)_clamp(72px,16vw,120px)] overflow-visible lg:block lg:h-[clamp(114px,12.68vw,162px)] ${compact ? "bg-[#e3e5e6]" : "bg-[url('/assets/hero/meeting.png')] bg-cover bg-top"}`}
+      >
+        {!compact && (
+          <div
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(245,242,238,.92),rgba(226,235,239,.84))] backdrop-blur-[2px] lg:bg-[linear-gradient(90deg,rgba(245,242,238,.88),rgba(226,235,239,.74))]"
+            aria-hidden="true"
+          />
+        )}
 
         <div className="relative z-[1] col-start-2 row-start-1 flex h-full min-w-0 flex-col justify-center overflow-hidden px-1.5 lg:absolute lg:left-[3.1%] lg:top-[9%] lg:block lg:h-auto lg:w-[73%] lg:overflow-visible lg:p-0">
           <p className="m-0 whitespace-nowrap font-serif text-[clamp(12px,3.7vw,30px)] leading-[.96] font-semibold tracking-[-.03em] text-[#f8f7f4] [-webkit-text-stroke:.6px_#181818] [font-variant:small-caps] [text-shadow:2px_2px_1px_rgba(0,0,0,.67),-1px_-1px_#fff] lg:text-[clamp(43px,5.25vw,67px)] lg:leading-[.91] lg:tracking-[.4px] lg:[-webkit-text-stroke:1px_#181818] lg:[text-shadow:3px_4px_2px_rgba(0,0,0,.72),-1px_-1px_#fff]">
