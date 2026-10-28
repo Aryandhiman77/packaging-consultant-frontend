@@ -8,6 +8,7 @@ import {
 import { useApi } from "../context/ApiContext";
 import { navigation as fallbackNavigation } from "../data/navigation";
 import { resolveNavigation } from "../data/resolveNavigation";
+import SiteLink from "./SiteLink";
 import {
   defaultSocialLinks,
   externalLinkProps,
@@ -71,13 +72,17 @@ function SocialLinks({ links, mobile = false }) {
 }
 
 function DesktopNavigation({ items }) {
+  const [activeMenu, setActiveMenu] = useState(null);
+
   return (
     <nav
       className="absolute bottom-[7.4%] left-[4.05%] z-[110] hidden items-stretch whitespace-nowrap bg-white/[.96] shadow-[0_0_0_1px_rgba(0,0,0,.06)] lg:flex"
       aria-label="Primary navigation"
     >
       {items.map((item) => {
+        const itemKey = item._id || item.label;
         const hasChildren = item.children?.length > 0;
+        const isOpen = activeMenu === itemKey;
         const label = (
           <>
             {item.label}
@@ -90,51 +95,51 @@ function DesktopNavigation({ items }) {
         );
         return (
           <div
-            className="group relative border-r border-[#171717] last:border-r-0"
-            key={item._id || item.label}
+            className="relative border-r border-[#171717] last:border-r-0"
+            key={itemKey}
+            onMouseEnter={() => hasChildren && setActiveMenu(itemKey)}
+            onMouseLeave={() => hasChildren && setActiveMenu(null)}
+            onFocus={() => hasChildren && setActiveMenu(itemKey)}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) {
+                setActiveMenu(null);
+              }
+            }}
           >
             {hasChildren ? (
               <button
                 type="button"
                 className="flex h-full items-center gap-[clamp(3px,.28vw,4px)] border-0 bg-transparent px-[clamp(7px,.72vw,10px)] pt-[clamp(3px,.28vw,4px)] pb-[clamp(3px,.25vw,4px)] font-sans text-[clamp(13px,1.3vw,17px)] leading-none text-[#111] transition-colors hover:bg-[#e8e4e0] focus-visible:bg-[#e8e4e0]"
                 aria-haspopup="menu"
+                aria-expanded={isOpen}
                 aria-label={`${item.label} menu`}
               >
                 {label}
               </button>
             ) : (
-              <a
+              <SiteLink
                 className="flex h-full items-center gap-[clamp(3px,.28vw,4px)] px-[clamp(7px,.72vw,10px)] pt-[clamp(3px,.28vw,4px)] pb-[clamp(3px,.25vw,4px)] font-sans text-[clamp(13px,1.3vw,17px)] leading-none !text-[#111] no-underline transition-colors hover:bg-[#e8e4e0] focus-visible:bg-[#e8e4e0]"
                 href={item.link}
               >
                 {label}
-              </a>
+              </SiteLink>
             )}
 
             {hasChildren && (
               <div
-                className="invisible absolute top-full left-0 z-[120] min-w-[220px] max-w-[320px] translate-y-1 border border-[#8f8b87] bg-white py-1.5 opacity-0 shadow-[0_12px_24px_rgba(0,0,0,.16)] transition-[opacity,transform,visibility] duration-150 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100"
+                className={`absolute top-full left-0 z-[120] min-w-[220px] max-w-[320px] border border-[#8f8b87] bg-white py-1.5 shadow-[0_12px_24px_rgba(0,0,0,.16)] transition-[opacity,transform,visibility] duration-150 ${isOpen ? "visible translate-y-0 opacity-100" : "invisible pointer-events-none translate-y-1 opacity-0"}`}
                 role="menu"
               >
                 {item.children.map((child) => (
-                  <a
+                  <SiteLink
                     key={child._id || `${item.label}-${child.label}`}
                     href={child.link}
-                    target={
-                      child.link.toLowerCase().endsWith(".pdf")
-                        ? "_blank"
-                        : undefined
-                    }
-                    rel={
-                      child.link.toLowerCase().endsWith(".pdf")
-                        ? "noreferrer"
-                        : undefined
-                    }
+                    onClick={() => setActiveMenu(null)}
                     role="menuitem"
                     className="block whitespace-normal px-4 py-2.5 text-[clamp(12px,1vw,15px)] leading-[1.18] font-bold !text-[#171717] no-underline hover:bg-[#eeeae7] focus-visible:bg-[#eeeae7]"
                   >
                     {child.label}
-                  </a>
+                  </SiteLink>
                 ))}
               </div>
             )}
@@ -183,7 +188,7 @@ function MobileNavigationLinks({ items, open, closeMenu }) {
                   </span>
                 </button>
               ) : (
-                <a
+                <SiteLink
                   className={`flex flex-1 items-center px-6 text-[16px] font-bold !text-white no-underline transition-[background-color,padding,opacity,transform] duration-300 hover:bg-white/[.09] hover:px-7 focus-visible:bg-white/[.09] focus-visible:px-7 ${open ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"}`}
                   style={{
                     transitionDelay: open ? `${80 + index * 38}ms` : "0ms",
@@ -192,7 +197,7 @@ function MobileNavigationLinks({ items, open, closeMenu }) {
                   onClick={closeMenu}
                 >
                   {item.label}
-                </a>
+                </SiteLink>
               )}
             </div>
             {hasChildren && (
@@ -202,24 +207,14 @@ function MobileNavigationLinks({ items, open, closeMenu }) {
               >
                 <div className="overflow-hidden" inert={!isExpanded}>
                   {item.children.map((child) => (
-                    <a
+                    <SiteLink
                       key={child._id || `${key}-${child.label}`}
                       href={child.link}
-                      target={
-                        child.link.toLowerCase().endsWith(".pdf")
-                          ? "_blank"
-                          : undefined
-                      }
-                      rel={
-                        child.link.toLowerCase().endsWith(".pdf")
-                          ? "noreferrer"
-                          : undefined
-                      }
                       onClick={closeMenu}
                       className="flex min-h-11 items-center border-t border-white/[.08] py-2 pr-5 pl-9 text-sm font-semibold !text-[#e9e3df] no-underline hover:bg-white/[.08]"
                     >
                       {child.label}
-                    </a>
+                    </SiteLink>
                   ))}
                 </div>
               </div>

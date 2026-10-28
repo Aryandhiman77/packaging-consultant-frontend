@@ -3,6 +3,7 @@ import { FaFacebookF, FaLinkedinIn, FaXTwitter, FaYoutube } from 'react-icons/fa
 import { useApi } from '../context/ApiContext'
 import { artTemplatesPath } from '../data/packagingServices'
 import { defaultSocialLinks, externalLinkProps, resolveSocialLinks } from '../data/socialLinks'
+import SiteLink from './SiteLink'
 
 const primaryLinks = [
   ['Home', '/#home'],
@@ -25,13 +26,9 @@ function LinkList({ links }) {
     <ul className="list-disc marker:text-black">
       {links.map(([label, href]) => (
         <li key={label}>
-          <a
-            href={href}
-            target={href.toLowerCase().endsWith('.pdf') ? '_blank' : undefined}
-            rel={href.toLowerCase().endsWith('.pdf') ? 'noreferrer' : undefined}
-          >
+          <SiteLink href={href}>
             {label}
-          </a>
+          </SiteLink>
         </li>
       ))}
     </ul>

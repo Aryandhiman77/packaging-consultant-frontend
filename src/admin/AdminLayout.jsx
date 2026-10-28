@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 
 import { useAdminAuth } from "../context/AdminAuthContext";
 
@@ -104,8 +104,8 @@ export default function AdminLayout() {
       className={`${dark ? "dark" : ""} min-h-screen bg-[#f4f6f8] font-sans text-slate-900 transition-colors duration-300 dark:bg-[#0b1018] dark:text-slate-100`}
     >
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-slate-200 bg-white px-4 py-5 transition-colors duration-300 lg:flex lg:flex-col dark:border-white/[.08] dark:bg-[#101722]">
-        <a
-          href="/"
+        <Link
+          to="/"
           className="flex items-center gap-3 px-2 !text-slate-950 no-underline dark:!text-white"
         >
           <img
@@ -119,7 +119,7 @@ export default function AdminLayout() {
               Admin panel
             </small>
           </span>
-        </a>
+        </Link>
 
         <nav className="mt-9 grid gap-1.5" aria-label="Admin navigation">
           <NavLink end to="/admin" className={navClass}>
@@ -177,12 +177,12 @@ export default function AdminLayout() {
             >
               <ThemeIcon dark={dark} />
             </button>
-            <a
-              href="/"
+            <Link
+              to="/"
               className="hidden rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold !text-slate-700 no-underline shadow-sm hover:bg-slate-50 sm:inline-flex dark:border-white/[.1] dark:bg-white/[.06] dark:!text-slate-200 dark:hover:bg-white/[.1]"
             >
               View website
-            </a>
+            </Link>
           </div>
         </header>
 
