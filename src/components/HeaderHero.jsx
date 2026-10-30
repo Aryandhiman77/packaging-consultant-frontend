@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   FaFacebookF,
   FaLinkedinIn,
@@ -35,38 +35,24 @@ function SocialLinks({ links, mobile = false }) {
       }
       aria-label="Social media links"
     >
-      <a
-        className="header-social header-social--x"
-        href={links.x}
-        {...externalLinkProps(links.x)}
-        aria-label="X"
-      >
-        <FaXTwitter aria-hidden="true" />
-      </a>
-      <a
-        className="header-social header-social--facebook"
-        href={links.facebook}
-        {...externalLinkProps(links.facebook)}
-        aria-label="Facebook"
-      >
-        <FaFacebookF aria-hidden="true" />
-      </a>
-      <a
-        className="header-social header-social--youtube"
-        href={links.youtube}
-        {...externalLinkProps(links.youtube)}
-        aria-label="YouTube"
-      >
-        <FaYoutube aria-hidden="true" />
-      </a>
-      <a
-        className="header-social header-social--linkedin"
-        href={links.linkedin}
-        {...externalLinkProps(links.linkedin)}
-        aria-label="LinkedIn"
-      >
-        <FaLinkedinIn aria-hidden="true" />
-      </a>
+      {[
+        ["x", FaXTwitter, "X"],
+        ["facebook", FaFacebookF, "Facebook"],
+        ["youtube", FaYoutube, "YouTube"],
+        ["linkedin", FaLinkedinIn, "LinkedIn"],
+      ].map(([key, Icon, label]) =>
+        /^https?:\/\//.test(links[key] || "") ? (
+          <a
+            key={key}
+            className={`header-social header-social--${key}`}
+            href={links[key]}
+            {...externalLinkProps(links[key])}
+            aria-label={label}
+          >
+            <Icon aria-hidden="true" />
+          </a>
+        ) : null,
+      )}
     </div>
   );
 }
@@ -106,13 +92,34 @@ function DesktopNavigation({ items }) {
               }
             }}
           >
-            {hasChildren ? (
+            {hasChildren && /^https?:\/\//.test(item.link) ? (
+              <div className="flex h-full items-center">
+                <SiteLink
+                  href={item.link}
+                  className="px-2 py-1 font-sans text-[clamp(13px,1.3vw,17px)] !text-[#111] no-underline"
+                  aria-label={`Visit ${item.label}`}
+                >
+                  {item.label}
+                </SiteLink>
+                <button
+                  type="button"
+                  aria-label={`Open ${item.label} menu`}
+                  aria-haspopup="menu"
+                  aria-expanded={isOpen}
+                  className="px-2 py-1 text-[#111]"
+                  onClick={() => setActiveMenu(isOpen ? null : itemKey)}
+                >
+                  ▼
+                </button>
+              </div>
+            ) : hasChildren ? (
               <button
                 type="button"
                 className="flex h-full items-center gap-[clamp(3px,.28vw,4px)] border-0 bg-transparent px-[clamp(7px,.72vw,10px)] pt-[clamp(3px,.28vw,4px)] pb-[clamp(3px,.25vw,4px)] font-sans text-[clamp(13px,1.3vw,17px)] leading-none text-[#111] transition-colors hover:bg-[#e8e4e0] focus-visible:bg-[#e8e4e0]"
                 aria-haspopup="menu"
                 aria-expanded={isOpen}
                 aria-label={`${item.label} menu`}
+                onClick={() => setActiveMenu(isOpen ? null : itemKey)}
               >
                 {label}
               </button>
@@ -162,7 +169,31 @@ function MobileNavigationLinks({ items, open, closeMenu }) {
         return (
           <div key={key} className="border-b border-white/[.12]">
             <div className="flex min-h-[52px] items-stretch">
-              {hasChildren ? (
+              {hasChildren && /^https?:\/\//.test(item.link) ? (
+                <div className="flex w-full items-center justify-between">
+                  <SiteLink
+                    href={item.link}
+                    onClick={closeMenu}
+                    className="flex-1 px-6 py-3 font-bold !text-white no-underline"
+                  >
+                    {item.label}
+                  </SiteLink>
+                  <button
+                    type="button"
+                    className="px-6 py-3 text-white"
+                    aria-label={`Expand ${item.label} menu`}
+                    aria-expanded={isExpanded}
+                    onClick={() =>
+                      setExpanded((current) => ({
+                        ...current,
+                        [key]: !current[key],
+                      }))
+                    }
+                  >
+                    ▼
+                  </button>
+                </div>
+              ) : hasChildren ? (
                 <button
                   type="button"
                   className={`flex flex-1 items-center justify-between px-6 text-left text-[16px] font-bold text-white transition-[background-color,padding,opacity,transform] duration-300 hover:bg-white/[.09] hover:px-7 focus-visible:bg-white/[.09] focus-visible:px-7 ${open ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"}`}
@@ -228,6 +259,9 @@ function MobileNavigationLinks({ items, open, closeMenu }) {
 
 export default function HeaderHero({ compact = false }) {
   const { getPublicNavigation } = useApi();
+  const headerBarRef = useRef(null);
+  const headingRef = useRef(null);
+  const brandMarkRef = useRef(null);
   const [items, setItems] = useState(fallbackNavigation);
   const [socialLinks, setSocialLinks] = useState(defaultSocialLinks);
   const [open, setOpen] = useState(
@@ -249,12 +283,80 @@ export default function HeaderHero({ compact = false }) {
     };
   }, [getPublicNavigation]);
 
+  // Keep the wordmark clear of the red brand mark on Windows, macOS,
+  // browser zoom and different desktop font renderers. Mobile stays as-is.
+  useLayoutEffect(() => {
+    const heading = headingRef.current;
+    const brandMark = brandMarkRef.current;
+    const headerBar = headerBarRef.current;
+    if (!heading || !brandMark || !headerBar) return undefined;
+
+    let mounted = true;
+    const fitHeading = () => {
+      // First measure the ORIGINAL desktop size. Resetting here is important
+      // so repeated resize events never keep shrinking the heading.
+      heading.style.removeProperty("font-size");
+      if (!window.matchMedia("(min-width: 1024px)").matches) return;
+
+      const markBounds = brandMark.getBoundingClientRect();
+      if (markBounds.width === 0 || markBounds.height === 0) return;
+
+      const headingBounds = heading.getBoundingClientRect();
+      const naturalWidth = heading.scrollWidth;
+      // Leave a visible gap between the letter shadow and the brand mark.
+      const safeGap = Math.max(18, Math.min(38, headerBar.clientWidth * 0.02));
+      const spaceBeforeMark = markBounds.left - headingBounds.left - safeGap;
+      if (spaceBeforeMark <= 0 || naturalWidth <= spaceBeforeMark) return;
+
+      const baseFontSize = Number.parseFloat(
+        window.getComputedStyle(heading).fontSize,
+      );
+      if (!Number.isFinite(baseFontSize) || baseFontSize <= 0) return;
+
+      // Shrink the font proportionally, not with scaleX: lettering keeps
+      // its original proportions and the subtitle/nav/logo do not move.
+      heading.style.fontSize = `${((baseFontSize * spaceBeforeMark) / naturalWidth).toFixed(2)}px`;
+      // Account for browser pixel rounding, including Windows ClearType.
+      const fittedWidth = heading.scrollWidth;
+      if (fittedWidth > spaceBeforeMark) {
+        const currentSize = Number.parseFloat(heading.style.fontSize);
+        heading.style.fontSize = `${((currentSize * spaceBeforeMark) / fittedWidth - 0.25).toFixed(2)}px`;
+      }
+    };
+
+    fitHeading();
+    window.addEventListener("resize", fitHeading, { passive: true });
+    const observer =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(fitHeading)
+        : null;
+    observer?.observe(headerBar);
+    observer?.observe(brandMark);
+
+    // Recalculate when web/system font files finish loading.
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(() => {
+        if (mounted) fitHeading();
+      });
+    }
+    document.fonts?.addEventListener?.("loadingdone", fitHeading);
+
+    return () => {
+      mounted = false;
+      window.removeEventListener("resize", fitHeading);
+      document.fonts?.removeEventListener?.("loadingdone", fitHeading);
+      observer?.disconnect();
+      heading.style.removeProperty("font-size");
+    };
+  }, []);
+
   return (
     <header
       className="hero relative z-[100] mx-auto w-full max-w-[100vw]"
       id="home"
     >
       <div
+        ref={headerBarRef}
         className={`relative z-[5] grid h-24 w-full grid-cols-[52px_minmax(0,1fr)_clamp(72px,16vw,120px)] overflow-visible lg:block lg:h-[clamp(114px,12.68vw,162px)] ${compact ? "bg-[#e3e5e6]" : "bg-[url('/assets/hero/meeting.png')] bg-cover bg-top"}`}
       >
         {!compact && (
@@ -265,7 +367,10 @@ export default function HeaderHero({ compact = false }) {
         )}
 
         <div className="relative z-[1] col-start-2 row-start-1 flex h-full min-w-0 flex-col justify-center overflow-hidden px-1.5 lg:absolute lg:left-[3.1%] lg:top-[9%] lg:block lg:h-auto lg:w-[73%] lg:overflow-visible lg:p-0">
-          <p className="m-0 whitespace-nowrap font-serif text-[clamp(12px,3.7vw,30px)] leading-[.96] font-semibold tracking-[-.03em] text-[#f8f7f4] [-webkit-text-stroke:.6px_#181818] [font-variant:small-caps] [text-shadow:2px_2px_1px_rgba(0,0,0,.67),-1px_-1px_#fff] lg:text-[clamp(43px,5.25vw,67px)] lg:leading-[.91] lg:tracking-[.4px] lg:[-webkit-text-stroke:1px_#181818] lg:[text-shadow:3px_4px_2px_rgba(0,0,0,.72),-1px_-1px_#fff]">
+          <p
+            ref={headingRef}
+            className="m-0 whitespace-nowrap font-serif text-[clamp(12px,3.7vw,30px)] leading-[.96] font-semibold tracking-[-.03em] text-[#f8f7f4] [-webkit-text-stroke:.6px_#181818] [font-variant:small-caps] [text-shadow:2px_2px_1px_rgba(0,0,0,.67),-1px_-1px_#fff] lg:text-[clamp(43px,5.25vw,67px)] lg:leading-[.91] lg:tracking-[.4px] lg:[-webkit-text-stroke:1px_#181818] lg:[text-shadow:3px_4px_2px_rgba(0,0,0,.72),-1px_-1px_#fff]"
+          >
             Packaging Consultants USA
           </p>
           <p className="mt-2 ml-0.5 text-[clamp(8.5px,2.2vw,13px)] leading-[1.08] font-black tracking-[-.2px] text-[#161616] italic [text-shadow:1px_1px_rgba(255,255,255,.78)] lg:mt-[clamp(6px,.55vw,8px)] lg:ml-[1.2%] lg:whitespace-nowrap lg:text-[clamp(18px,2.18vw,28px)] lg:leading-none lg:tracking-[-.7px]">
@@ -275,6 +380,7 @@ export default function HeaderHero({ compact = false }) {
 
         <div className="hidden lg:absolute lg:top-[2.5%] lg:right-[4.2%] lg:flex lg:h-[58%] lg:w-[15%] lg:items-start lg:justify-end lg:overflow-visible">
           <img
+            ref={brandMarkRef}
             className="block h-full w-auto max-w-full object-contain object-top"
             src="/assets/site/header-mark-clean.png"
             alt="Packaging Consultants USA mark"

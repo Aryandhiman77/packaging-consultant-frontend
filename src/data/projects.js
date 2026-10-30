@@ -27,7 +27,7 @@ export const projects = [
       "Choosing the project type does not assume the answer. It allows us to begin with the condition that brought you here, identify what is already known, and avoid restarting work that has already been completed correctly.",
     ],
     links: [
-      ["Contact Us With a General Question", "/#contact"],
+      ["Contact Us With a General Question", "/contact-us"],
     ],
   },
   {
@@ -252,7 +252,7 @@ export const projects = [
         "Upload Failure Photographs and Records",
         reviewPath("upload-files-timing"),
       ],
-      ["Contact Us About an Immediate Packaging Issue", "/#contact"],
+      ["Contact Us About an Immediate Packaging Issue", "/contact-us"],
     ],
   },
   {

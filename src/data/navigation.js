@@ -41,10 +41,10 @@ export const navigation = [
     link('Packaging Experience', '/about-us/packaging-experience'),
     link('U.S. / Offshore Capabilities', '/about-us/us-offshore-capabilities'),
   ]),
-  link('Packaging Times', '#packaging-times', [
-    link('Visit Packaging Times', '#visit-packaging-times'),
-    link('Packaging News & Features', '#packaging-news'),
-    link('Sponsored Advertisers', '#sponsored-advertisers'),
+  link('Packaging Times', 'https://packagingtimes.com/', [
+    link('Visit Packaging Times', 'https://packagingtimes.com/'),
+    link('Packaging News & Features', 'https://packagingtimes.com/news'),
+    link('Sponsored Advertisers', 'https://packagingtimes.com/advertising'),
   ]),
   link('Project Review', '#project-review', [
     link('Starting Point', '/project-review/starting-point'),
@@ -55,5 +55,5 @@ export const navigation = [
     link('Upload Files & Timing', '/project-review/upload-files-timing'),
     link('Contact & Submission', '/project-review/contact-submission'),
   ]),
-  link('Contact Us', '#contact'),
+  link('Contact Us', '/contact-us'),
 ]

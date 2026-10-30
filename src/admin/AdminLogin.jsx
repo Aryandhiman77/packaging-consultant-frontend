@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import "./AdminTheme.css";
 
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
@@ -14,6 +15,8 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [dark, setDark] = useState(() => localStorage.getItem("admin-theme") === "dark");
+  useEffect(() => { localStorage.setItem("admin-theme", dark ? "dark" : "light"); }, [dark]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -52,7 +55,8 @@ export default function AdminLogin() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,#fff_0%,#f5f1ed_42%,#e8edf3_100%)] p-4">
+    <main className={`pc-admin ${dark ? "dark" : ""} relative flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,#fff_0%,#f5f1ed_42%,#e8edf3_100%)] p-4`}>
+      <button type="button" onClick={() => setDark(value => !value)} className="pc-action absolute right-6 top-6 px-4" aria-label={dark ? "Use light theme" : "Use dark theme"}>{dark ? "Light mode" : "Dark mode"}</button>
       <section className="w-full max-w-md rounded-3xl border border-white/80 bg-white/95 p-7 shadow-[0_24px_70px_rgba(22,32,48,.16)] sm:p-9">
         <div className="mb-7 flex items-center gap-4">
           <img

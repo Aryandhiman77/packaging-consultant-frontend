@@ -40,7 +40,7 @@ export const industries = [
       ['Explore Product Protection & Barrier Requirements', servicePath('product-protection-barrier-requirements')],
       ['Explore Packaging Structures & Dielines', servicePath('packaging-structures-dielines')],
       ['Start a Food & Beverage Project Review', '/project-review/starting-point'],
-      ['Contact Us With a General Question', '/#contact'],
+      ['Contact Us With a General Question', '/contact-us'],
     ],
   },
   {
@@ -250,7 +250,7 @@ export const industries = [
       ['Explore Protection & Function', servicePath('product-protection-barrier-requirements')],
       ['Explore Dielines, Artwork & Prepress', servicePath('prepress-printing')],
       ['Start a Vitamins or Supplements Project Review', '/project-review/starting-point'],
-      ['Contact Us With a General Question', '/#contact'],
+      ['Contact Us With a General Question', '/contact-us'],
     ],
   },
   {
@@ -375,7 +375,7 @@ export const industries = [
     links: [
       ['Begin an Other Product Category Review', '/project-review/starting-point'],
       ['Explore Packaging Development', servicePath('packaging-development')],
-      ['Contact Us With a General Packaging Question', '/#contact'],
+      ['Contact Us With a General Packaging Question', '/contact-us'],
     ],
   },
 ]

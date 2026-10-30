@@ -1,0 +1,231 @@
+.blog-crop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px;
+  background: rgba(12, 19, 32, 0.83);
+  backdrop-filter: blur(4px);
+}
+
+.blog-crop-panel {
+  width: min(900px, 100%);
+  max-height: 96dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #fff;
+  color: #172339;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.35);
+}
+
+.blog-crop-head {
+  padding: 19px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.blog-crop-head h3 {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.blog-crop-head p:not(.blog-crop-eyebrow) {
+  font-size: 13px;
+  margin-top: 6px;
+  color: #5b6c82;
+}
+
+.blog-crop-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #c82438;
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+.blog-crop-close {
+  background: #f0f3f8;
+  border: 1px solid #d6dfeb;
+  border-radius: 9px;
+  min-width: 36px;
+  min-height: 36px;
+  font-size: 23px;
+  line-height: 1;
+  color: #172339;
+}
+
+.blog-crop-body {
+  padding: 22px 24px;
+  overflow: auto;
+  min-height: 0;
+}
+
+.blog-crop-viewport {
+  width: 100%;
+  aspect-ratio: 1200 / 630;
+  position: relative;
+  overflow: hidden;
+  border-radius: 11px;
+  background: #29374a;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+  outline: 1px solid #bcc8d8;
+}
+
+.blog-crop-viewport:active {
+  cursor: grabbing;
+}
+
+.blog-crop-viewport img {
+  position: absolute;
+  max-width: none !important;
+  max-height: none !important;
+  transform: translate(-50%, -50%);
+  object-fit: fill;
+  pointer-events: none;
+  user-select: none;
+}
+
+.blog-crop-guides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+.blog-crop-guides::before,
+.blog-crop-guides::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 1px dashed #ffffff9c;
+}
+
+.blog-crop-guides::before {
+  left: 33.333%;
+}
+.blog-crop-guides::after {
+  left: 66.666%;
+}
+
+.blog-crop-guides span:nth-child(1),
+.blog-crop-guides span:nth-child(2) {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed #ffffff9c;
+}
+
+.blog-crop-guides span:nth-child(1) {
+  top: 33.333%;
+}
+.blog-crop-guides span:nth-child(2) {
+  top: 66.666%;
+}
+
+.blog-crop-tools {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.blog-crop-tools input[type="range"] {
+  flex: 1;
+  accent-color: #c82438;
+  min-width: 90px;
+}
+
+.blog-crop-tools span {
+  width: 48px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.blog-crop-tools button {
+  padding: 7px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #f8fafc;
+}
+
+.blog-crop-hint {
+  font-size: 12px;
+  color: #5b6c82;
+  margin-top: 12px;
+}
+
+.blog-crop-error {
+  margin-top: 12px;
+  color: #a51f35;
+  background: #fff0f1;
+  border: 1px solid #ef9aa4;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.blog-crop-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 14px 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.blog-crop-actions button {
+  min-height: 40px;
+  padding: 8px 17px;
+}
+
+.pc-admin.dark .blog-crop-panel {
+  background: #fff;
+  color: #172339;
+}
+
+.pc-admin.dark .blog-crop-head {
+  border-color: #e2e8f0;
+}
+
+.pc-admin.dark .blog-crop-tools button,
+.pc-admin.dark .blog-crop-close {
+  color: #172339;
+  background: #f8fafc;
+}
+
+.pc-admin.dark .blog-crop-hint,
+.pc-admin.dark .blog-crop-head p:not(.blog-crop-eyebrow) {
+  color: #52637a;
+}
+
+@media (max-width: 640px) {
+  .blog-crop-overlay {
+    padding: 6px;
+  }
+  .blog-crop-panel {
+    border-radius: 12px;
+  }
+  .blog-crop-head,
+  .blog-crop-body,
+  .blog-crop-actions {
+    padding: 14px;
+  }
+  .blog-crop-head h3 {
+    font-size: 18px;
+  }
+  .blog-crop-tools {
+    gap: 8px;
+  }
+}

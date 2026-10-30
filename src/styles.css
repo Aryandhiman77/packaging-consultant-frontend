@@ -454,3 +454,21 @@ button, a { -webkit-tap-highlight-color: transparent; }
   html { scroll-behavior: auto; }
   .mobile-nav__panel { transition: none; }
 }
+
+/* CMS articles keep the approved white page shell. Rich text remains editable. */
+.cms-rich-content {font-size:clamp(.98rem,1.22vw,1.18rem);line-height:1.58;color:#201d1b;overflow-wrap:anywhere}
+.cms-rich-content p {margin:0 0 1.15rem}
+.cms-rich-content h1,.cms-rich-content h2,.cms-rich-content h3 {font-weight:900;line-height:1.36;margin:1.65rem 0 .65rem}
+.cms-rich-content h2{font-size:clamp(1.05rem,1.4vw,1.35rem)}
+.cms-rich-content ul{list-style:disc;padding-left:2rem;margin:1rem 0}
+.cms-rich-content ol{list-style:decimal;padding-left:2rem;margin:1rem 0}
+.cms-rich-content li{padding-left:.25rem;margin:.3rem 0}
+.cms-rich-content a{color:#c51e30;text-decoration:underline;font-weight:700}
+.cms-rich-content blockquote{margin:1.3rem 0;padding-left:1.4rem;border-left:3px solid #bd2632;font-style:italic}
+.cms-rich-content img{max-width:100%;height:auto}
+.cms-rich-content figure{max-width:100%;margin:1rem auto}
+.cms-rich-content figcaption{text-align:center;font-size:.85rem;color:#666}
+.cms-rich-content table{border-collapse:collapse;max-width:100%;width:100%;margin:1rem 0}
+.cms-rich-content th,.cms-rich-content td{border:1px solid #bbb;padding:.5rem}
+.cms-editor .ck-editor__editable_inline{min-height:350px;max-height:55vh;overflow-y:auto;color:#111}
+.cms-editor .ck.ck-content{font-size:16px;line-height:1.5}

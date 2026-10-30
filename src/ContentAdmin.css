@@ -1,0 +1,22 @@
+/* Dropdown CMS: a full, visible editing canvas rather than a title-only modal. */
+.cms-modal-overlay {position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7);padding:12px}
+.cms-modal-window {display:flex;flex-direction:column;width:min(1180px,100%);height:min(92vh,980px);background:#fff;color:#0f172a;border-radius:18px;overflow:hidden;box-shadow:0 28px 90px rgba(0,0,0,.38)}
+.cms-modal-top {display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:20px 24px 16px;border-bottom:1px solid #e2e8f0;flex-shrink:0}
+.cms-modal-eyebrow {font-size:11px;letter-spacing:.14em;font-weight:800;color:#dc2626;margin-bottom:5px}
+.cms-modal-close {font-size:29px;line-height:1;min-width:38px;min-height:38px;border:1px solid #e2e8f0;border-radius:9px;color:#0f172a;cursor:pointer;background:#fff}
+.cms-modal-body {overflow-y:auto;flex:1;min-height:0;padding:20px 24px 28px}
+.cms-modal-bottom {display:flex;gap:12px;align-items:center;justify-content:flex-end;padding:16px 24px;border-top:1px solid #e2e8f0;background:#fff;flex-shrink:0}
+.cms-admin-input {display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#111827;font-size:15px}
+.cms-editor-visible {display:block;min-height:440px;width:100%;margin-top:8px;position:relative;background:#fff;border-radius:7px}
+.cms-editor-visible .ck.ck-editor {display:block!important;width:100%!important;visibility:visible!important}
+.cms-editor-visible .ck.ck-editor__main {display:block!important;min-height:390px}
+.cms-editor-visible .ck.ck-editor__editable_inline {min-height:390px!important;max-height:none!important;overflow-y:visible!important;padding:22px 26px!important;line-height:1.65!important;font-size:17px!important;color:#1f2937!important;background:#fff!important;box-shadow:none}
+.cms-editor-visible .ck.ck-toolbar {border-color:#cbd5e1!important;padding:6px!important}
+.cms-editor-visible .ck.ck-content p {margin:0 0 1.05em}
+.cms-editor-visible .ck.ck-content ul {list-style:disc;padding-left:2em}
+.cms-editor-visible .ck.ck-content ol {list-style:decimal;padding-left:2em}
+.cms-editor-visible .ck.ck-content h2 {font-size:1.45em;font-weight:700;margin:1em 0 .55em}
+.cms-editor-visible .ck.ck-content h3 {font-size:1.2em;font-weight:700;margin:1em 0 .5em}
+.cms-editor-visible .ck.ck-content table {border-collapse:collapse;width:100%}
+.cms-editor-visible .ck.ck-content table td,.cms-editor-visible .ck.ck-content table th {border:1px solid #cbd5e1;padding:8px}
+@media(max-width:640px){.cms-modal-overlay{padding:5px}.cms-modal-window{height:98dvh;border-radius:12px}.cms-modal-top,.cms-modal-body,.cms-modal-bottom{padding:14px}.cms-editor-visible .ck.ck-editor__editable_inline{padding:14px!important;min-height:280px!important}.cms-modal-bottom{flex-wrap:wrap}}

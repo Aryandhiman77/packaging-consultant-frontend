@@ -388,7 +388,7 @@ export const packagingServices = [
     ],
     links: [
       ["Begin a Project Review", "/project-review/starting-point"],
-      ["Contact Us With a General Packaging Question", "/#contact"],
+      ["Contact Us With a General Packaging Question", "/contact-us"],
     ],
   },
 ];

@@ -15,6 +15,13 @@ import RequireAdmin from "./admin/RequireAdmin";
 import ProjectReviews from "./admin/ProjectReviews";
 import ProjectReviewDetail from "./admin/ProjectReviewDetail";
 import NavigationSettings from "./admin/NavigationSettings";
+import CmsContentPage from "./components/CmsContentPage";
+import ContactUsPage from "./components/ContactUsPage";
+import ContentAdmin from "./admin/ContentAdmin";
+import SiteContentAdmin from "./admin/SiteContentAdmin";
+import ContactAdmin from "./admin/ContactAdmin";
+import BlogAdmin from "./admin/BlogAdmin";
+import BlogPage from "./components/BlogPage";
 
 import ArtTemplatesPage from "./components/ArtTemplatesPage";
 import AboutUsPage from "./components/AboutUsPage";
@@ -70,7 +77,16 @@ export default function App() {
         >
           <Route index element={<AdminDashboard />} />
 
+          {/* The original navigation editor keeps its exact UI and data flow. */}
           <Route path="settings" element={<NavigationSettings />} />
+          <Route path="navigation" element={<Navigate to="/admin/settings" replace />} />
+          {/* Content management is independent of navbar labels and order. */}
+          <Route path="cms" element={<ContentAdmin />} />
+          <Route path="content-pages" element={<Navigate to="/admin/cms" replace />} />
+          <Route path="site-content" element={<SiteContentAdmin />} />
+          <Route path="blogs" element={<BlogAdmin />} />
+          
+          <Route path="contact-messages" element={<ContactAdmin />} />
 
           <Route path="project-reviews" element={<ProjectReviews />} />
 
@@ -112,17 +128,20 @@ export default function App() {
 
         <Route
           path="/packaging-services/:slug"
-          element={<PackagingServicePage />}
+          element={<CmsContentPage group="packaging-services" />}
         />
 
-        <Route path="/industries/:slug" element={<IndustryPage />} />
+        <Route path="/industries/:slug" element={<CmsContentPage group="industries" />} />
 
-        <Route path="/projects/:slug" element={<ProjectPage />} />
+        <Route path="/projects/:slug" element={<CmsContentPage group="projects" />} />
 
-        <Route path="/about-us/:slug" element={<AboutUsPage />} />
+        <Route path="/about-us/:slug" element={<CmsContentPage group="about-us" />} />
 
         <Route path="/project-review/:slug" element={<ProjectReviewPage />} />
 
+        <Route path="/contact-us" element={<ContactUsPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/:slug" element={<BlogPage />} />
         <Route path="/" element={<PublicSite />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />

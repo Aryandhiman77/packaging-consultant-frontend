@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 
 import { useAdminAuth } from "../context/AdminAuthContext";
+import "./AdminTheme.css";
 
 function Icon({ name }) {
   const paths = {
@@ -101,9 +102,9 @@ export default function AdminLayout() {
 
   return (
     <div
-      className={`${dark ? "dark" : ""} min-h-screen bg-[#f4f6f8] font-sans text-slate-900 transition-colors duration-300 dark:bg-[#0b1018] dark:text-slate-100`}
+      className={`pc-admin ${dark ? "dark" : ""} min-h-screen bg-[#edf2f8] font-sans text-slate-900 transition-colors duration-300 dark:bg-[#263349] dark:text-slate-100`}
     >
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-slate-200 bg-white px-4 py-5 transition-colors duration-300 lg:flex lg:flex-col dark:border-white/[.08] dark:bg-[#101722]">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-slate-200 bg-white px-4 py-5 transition-colors duration-300 lg:flex lg:flex-col dark:border-white/[.08] dark:bg-[#303f55]">
         <Link
           to="/"
           className="flex items-center gap-3 px-2 !text-slate-950 no-underline dark:!text-white"
@@ -132,7 +133,24 @@ export default function AdminLayout() {
           </NavLink>
           <NavLink to="/admin/settings" className={navClass}>
             <Icon name="settings" />
-            Settings
+            Navigation & Dropdowns
+          </NavLink>
+          <NavLink to="/admin/cms" className={navClass}>
+            <Icon name="reviews" />
+            Content CMS
+          </NavLink>
+          <NavLink to="/admin/blogs" className={navClass}>
+            <Icon name="reviews" />
+            Blog Posts
+          </NavLink>
+          <NavLink to="/admin/site-content" className={navClass}>
+            <Icon name="settings" />
+            Home & Footer
+          </NavLink>
+
+          <NavLink to="/admin/contact-messages" className={navClass}>
+            <Icon name="reviews" />
+            Contact Messages
           </NavLink>
         </nav>
 
@@ -158,7 +176,7 @@ export default function AdminLayout() {
       </aside>
 
       <div className="lg:pl-64">
-        <header className="sticky top-0 z-20 flex min-h-16 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur transition-colors duration-300 sm:px-7 dark:border-white/[.08] dark:bg-[#101722]/95">
+        <header className="sticky top-0 z-20 flex min-h-16 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur transition-colors duration-300 sm:px-7 dark:border-white/[.08] dark:bg-[#303f55]/95">
           <div>
             <p className="text-xs font-bold tracking-[.16em] text-slate-400 uppercase dark:text-slate-500">
               Site administration
@@ -187,7 +205,7 @@ export default function AdminLayout() {
         </header>
 
         <nav
-          className="grid grid-cols-3 gap-2 border-b border-slate-200 bg-white p-3 lg:hidden dark:border-white/[.08] dark:bg-[#101722]"
+          className="grid grid-cols-2 gap-2 border-b border-slate-200 bg-white p-3 sm:grid-cols-3 lg:hidden dark:border-white/[.08] dark:bg-[#303f55]"
           aria-label="Mobile admin navigation"
         >
           <NavLink end to="/admin" className={navClass}>
@@ -200,7 +218,24 @@ export default function AdminLayout() {
           </NavLink>
           <NavLink to="/admin/settings" className={navClass}>
             <Icon name="settings" />
-            Settings
+            Navigation & Dropdowns
+          </NavLink>
+          <NavLink to="/admin/cms" className={navClass}>
+            <Icon name="reviews" />
+            Content CMS
+          </NavLink>
+          <NavLink to="/admin/blogs" className={navClass}>
+            <Icon name="reviews" />
+            Blog Posts
+          </NavLink>
+          <NavLink to="/admin/site-content" className={navClass}>
+            <Icon name="settings" />
+            Home & Footer
+          </NavLink>
+
+          <NavLink to="/admin/contact-messages" className={navClass}>
+            <Icon name="reviews" />
+            Contact Messages
           </NavLink>
         </nav>
 

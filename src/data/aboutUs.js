@@ -43,7 +43,7 @@ export const aboutUsPages = [
       ["Meet Our President and CEO", "/about-us/president-ceo"],
       ["Review Packaging Experience", "/about-us/packaging-experience"],
       ["Begin a Project Review", "/project-review/starting-point"],
-      ["Contact Us With a General Question", "/#contact"],
+      ["Contact Us With a General Question", "/contact-us"],
     ],
   }),
   page("president-ceo", "Our President and CEO", {
