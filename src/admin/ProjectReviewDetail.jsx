@@ -64,7 +64,7 @@ function getRows(step, group, answers) {
 export default function ProjectReviewDetail() {
   const { id } = useParams();
 
-  const { getProjectReview, updateProjectReview, downloadProjectReviewFile } =
+  const { request, getProjectReview, updateProjectReview, downloadProjectReviewFile } =
     useApi();
 
   const [review, setReview] = useState(null);
@@ -73,6 +73,7 @@ export default function ProjectReviewDetail() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [downloading, setDownloading] = useState("");
+  const [retryingEmail, setRetryingEmail] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
@@ -88,6 +89,10 @@ export default function ProjectReviewDetail() {
         if (!active) return;
 
         setReview(result.data);
+        if (!result.data.adminSeenAt) {
+          request(`/api/admin/notifications/review/${id}/read`, { method: "PATCH" })
+            .catch(() => { /* Opening a review should still work if read tracking fails. */ });
+        }
         setStatus(result.data.status);
         setAdminNotes(result.data.adminNotes || "");
       } catch (err) {
@@ -102,7 +107,7 @@ export default function ProjectReviewDetail() {
     return () => {
       active = false;
     };
-  }, [id, getProjectReview]);
+  }, [id, getProjectReview, request]);
 
   const saveChanges = async (event) => {
     event.preventDefault();
@@ -125,6 +130,20 @@ export default function ProjectReviewDetail() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const retryEmail = async () => {
+    setRetryingEmail(true);
+    setMessage("");
+    setError("");
+    try {
+      const result = await request(`/api/admin/notifications/review/${id}/retry-email`, { method: "POST" });
+      const refreshed = await getProjectReview(id);
+      setReview(refreshed.data);
+      setMessage(`Admin email: ${result.data.admin.status} · Client email: ${result.data.client.status}`);
+    } catch (err) {
+      setError(err.message);
+    } finally { setRetryingEmail(false); }
   };
 
   const downloadFile = async (file) => {
@@ -184,6 +203,18 @@ export default function ProjectReviewDetail() {
               Submitted: {new Date(review.createdAt).toLocaleString()}
             </p>
           </header>
+
+          <div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm dark:border-white/10 dark:bg-[#344258] dark:text-slate-100">
+            <span><strong>Admin email:</strong> {review.notificationStatus || "pending"}</span>
+            <span><strong>Client email:</strong> {review.clientEmailStatus || "pending"}</span>
+            {(review.notificationStatus !== "sent" || review.clientEmailStatus !== "sent") && (
+              <button type="button" disabled={retryingEmail} onClick={retryEmail}
+                className="rounded-lg border border-slate-300 px-3 py-2 font-semibold dark:border-slate-500">
+                {retryingEmail ? "Retrying..." : "Retry unsent email"}
+              </button>
+            )}
+          </div>
+          {message && <p role="status" className="mt-3 text-sm text-emerald-700 dark:text-emerald-300">{message}</p>}
 
           <div className="mt-7 grid gap-6 xl:grid-cols-[1fr_340px]">
             <div className="space-y-5">
