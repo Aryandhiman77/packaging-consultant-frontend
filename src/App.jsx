@@ -19,6 +19,7 @@ import CmsContentPage from "./components/CmsContentPage";
 import ContactUsPage from "./components/ContactUsPage";
 import ContentAdmin from "./admin/ContentAdmin";
 import SiteContentAdmin from "./admin/SiteContentAdmin";
+import ContactCopyAdmin from "./admin/ContactCopyAdmin";
 import ContactAdmin from "./admin/ContactAdmin";
 import BlogAdmin from "./admin/BlogAdmin";
 import BlogPage from "./components/BlogPage";
@@ -83,7 +84,10 @@ export default function App() {
           {/* Content management is independent of navbar labels and order. */}
           <Route path="cms" element={<ContentAdmin />} />
           <Route path="content-pages" element={<Navigate to="/admin/cms" replace />} />
-          <Route path="site-content" element={<SiteContentAdmin />} />
+          <Route path="site-content" element={<Navigate to="/admin/site-content/home" replace />} />
+          <Route path="site-content/home" element={<SiteContentAdmin section="home" />} />
+          <Route path="site-content/footer" element={<SiteContentAdmin section="footer" />} />
+          <Route path="site-content/contact" element={<ContactCopyAdmin />} />
           <Route path="blogs" element={<BlogAdmin />} />
           
           <Route path="contact-messages" element={<ContactAdmin />} />

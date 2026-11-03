@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 import { Link, useParams } from "react-router-dom";
 
@@ -91,6 +92,7 @@ export default function ProjectReviewDetail() {
         setReview(result.data);
         if (!result.data.adminSeenAt) {
           request(`/api/admin/notifications/review/${id}/read`, { method: "PATCH" })
+            .then(() => window.dispatchEvent(new Event("admin-notifications-changed")))
             .catch(() => { /* Opening a review should still work if read tracking fails. */ });
         }
         setStatus(result.data.status);
@@ -123,8 +125,7 @@ export default function ProjectReviewDetail() {
       });
 
       setReview(result.data);
-
-      setMessage("Review updated successfully.");
+      toast.success("Project Review saved successfully.");
     } catch (err) {
       setError(err.message);
     } finally {

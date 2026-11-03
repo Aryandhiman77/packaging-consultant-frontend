@@ -20,10 +20,10 @@ function animateReorder(nodes, update) {
     node.animate([{transform:`translate(${x}px,${y}px)`,boxShadow:'0 12px 24px #0002'},{transform:'translate(0,0)',boxShadow:'none'}],{duration:380,easing:'cubic-bezier(.22,1,.36,1)'});
   }
 }
-export default function SiteContentAdmin(){
+export default function SiteContentAdmin({ section = 'home' }){
   const {request}=useApi(); const [site,setSite]=useState(null); const [links,setLinks]=useState([]);
   const [saved,setSaved]=useState('');const [error,setError]=useState('');const [busy,setBusy]=useState(false);
-  const [tab,setTab]=useState('home');const [drag,setDrag]=useState(null); const rowRefs=useRef(new Map());
+  const tab=section;const [drag,setDrag]=useState(null); const rowRefs=useRef(new Map());
   useEffect(()=>{request('/api/admin/site-content').then(r=>{setSite(r.data);setLinks(decorate(r.data?.footer?.links));}).catch(e=>setError(e.message));},[request]);
   const editHome=(key,value)=>setSite(prev=>({...prev,home:{...prev.home,[key]:value}}));
   const editFooter=(key,value)=>setSite(prev=>({...prev,footer:{...prev.footer,[key]:value}}));
@@ -38,11 +38,7 @@ export default function SiteContentAdmin(){
   }catch(e){setError(e.message)}finally{setBusy(false)}}
   const input='pc-field w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-slate-900';
   return <section className="space-y-6">
-    <div><p className="pc-eyebrow">Website settings</p><h1 className="text-2xl font-black">Home &amp; Footer</h1><p className="mt-1 text-sm text-slate-500">Plain text fields. The home hero, Project Review and Art Templates stay unchanged.</p></div>
-    <div className="flex flex-wrap gap-2" role="tablist" aria-label="Website section">
-      <button type="button" role="tab" aria-selected={tab==='home'} className={`pc-tab ${tab==='home'?'is-active':''}`} onClick={()=>setTab('home')}>Home Copy &amp; Quotes</button>
-      <button type="button" role="tab" aria-selected={tab==='footer'} className={`pc-tab ${tab==='footer'?'is-active':''}`} onClick={()=>setTab('footer')}>Footer</button>
-    </div>
+    <div><p className="pc-eyebrow">Website settings</p><h1 className="text-2xl font-black">{tab==='home'?'Home Settings':'Footer Settings'}</h1><p className="mt-1 text-sm text-slate-500">{tab==='home'?'Manage homepage copy and quotes.':'Manage the footer address, email and links.'}</p></div>
     {site&&tab==='home'&&<div className="pc-card grid gap-4 rounded-xl bg-white p-5">{homeFields.map(([key,label])=><label key={key} className="grid gap-2"><span className="font-semibold">{label}</span><textarea rows={['paragraph1','paragraph2','lead'].includes(key)?5:2} className={input} value={site.home?.[key]||''} onChange={e=>editHome(key,e.target.value)}/></label>)}</div>}
     {site&&tab==='footer'&&<div className="pc-card space-y-5 rounded-xl bg-white p-5">
       <div className="grid gap-4 sm:grid-cols-2"><label className="grid gap-1.5 font-semibold">Mailing Address<textarea className={input} rows={3} value={site.footer?.address||''} onChange={e=>editFooter('address',e.target.value)}/></label><label className="grid gap-1.5 font-semibold">Contact Email<input className={input} type="email" value={site.footer?.email||''} onChange={e=>editFooter('email',e.target.value)}/></label></div>

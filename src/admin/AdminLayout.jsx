@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import { useAdminAuth } from "../context/AdminAuthContext";
 import "./AdminTheme.css";
+import AdminNotifications, { AdminNotificationProvider, UnreadBadge } from "./AdminNotifications";
 
 function Icon({ name }) {
   const paths = {
@@ -77,6 +79,10 @@ function ThemeIcon({ dark }) {
 }
 
 export default function AdminLayout() {
+  return <AdminNotificationProvider><AdminShell /></AdminNotificationProvider>;
+}
+
+function AdminShell() {
   const navigate = useNavigate();
 
   const { signOut, expiresAt } = useAdminAuth();
@@ -104,7 +110,8 @@ export default function AdminLayout() {
     <div
       className={`pc-admin ${dark ? "dark" : ""} min-h-screen bg-[#edf2f8] font-sans text-slate-900 transition-colors duration-300 dark:bg-[#263349] dark:text-slate-100`}
     >
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-slate-200 bg-white px-4 py-5 transition-colors duration-300 lg:flex lg:flex-col dark:border-white/[.08] dark:bg-[#303f55]">
+      <Toaster position="top-right" toastOptions={{ duration: 3500, success: { iconTheme: { primary: "#16a34a", secondary: "#fff" } } }} />
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 overflow-y-auto border-r border-slate-200 bg-white px-4 py-5 transition-colors duration-300 lg:flex lg:flex-col dark:border-white/[.08] dark:bg-[#303f55]">
         <Link
           to="/"
           className="flex items-center gap-3 px-2 !text-slate-950 no-underline dark:!text-white"
@@ -130,6 +137,7 @@ export default function AdminLayout() {
           <NavLink to="/admin/project-reviews" className={navClass}>
             <Icon name="reviews" />
             Project Reviews
+            <UnreadBadge type="review" />
           </NavLink>
           <NavLink to="/admin/settings" className={navClass}>
             <Icon name="settings" />
@@ -143,14 +151,23 @@ export default function AdminLayout() {
             <Icon name="reviews" />
             Blog Posts
           </NavLink>
-          <NavLink to="/admin/site-content" className={navClass}>
+          <NavLink to="/admin/site-content/home" className={navClass}>
             <Icon name="settings" />
-            Home & Footer
+            Home Settings
+          </NavLink>
+          <NavLink to="/admin/site-content/footer" className={navClass}>
+            <Icon name="settings" />
+            Footer Settings
+          </NavLink>
+          <NavLink to="/admin/site-content/contact" className={navClass}>
+            <Icon name="settings" />
+            Contact Page Settings
           </NavLink>
 
           <NavLink to="/admin/contact-messages" className={navClass}>
             <Icon name="reviews" />
             Contact Messages
+            <UnreadBadge type="contact" />
           </NavLink>
         </nav>
 
@@ -186,6 +203,7 @@ export default function AdminLayout() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <AdminNotifications />
             <button
               type="button"
               onClick={() => setDark((value) => !value)}
@@ -215,6 +233,7 @@ export default function AdminLayout() {
           <NavLink to="/admin/project-reviews" className={navClass}>
             <Icon name="reviews" />
             Project Reviews
+            <UnreadBadge type="review" />
           </NavLink>
           <NavLink to="/admin/settings" className={navClass}>
             <Icon name="settings" />
@@ -228,14 +247,23 @@ export default function AdminLayout() {
             <Icon name="reviews" />
             Blog Posts
           </NavLink>
-          <NavLink to="/admin/site-content" className={navClass}>
+          <NavLink to="/admin/site-content/home" className={navClass}>
             <Icon name="settings" />
-            Home & Footer
+            Home Settings
+          </NavLink>
+          <NavLink to="/admin/site-content/footer" className={navClass}>
+            <Icon name="settings" />
+            Footer Settings
+          </NavLink>
+          <NavLink to="/admin/site-content/contact" className={navClass}>
+            <Icon name="settings" />
+            Contact Page Settings
           </NavLink>
 
           <NavLink to="/admin/contact-messages" className={navClass}>
             <Icon name="reviews" />
             Contact Messages
+            <UnreadBadge type="contact" />
           </NavLink>
         </nav>
 

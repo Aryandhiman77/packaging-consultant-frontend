@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useApi } from "../context/ApiContext";
 import { projectReviewSteps } from "../data/projectReview";
 import ReviewStatusBadge, { statusLabel } from "./ReviewStatusBadge";
@@ -138,7 +139,7 @@ export default function ProjectReviewModal({ id, onClose, onUpdated }) {
       const result = await updateProjectReview(id, { status, adminNotes });
       setReview(result.data);
       onUpdated(result.data);
-      setMessage("Review updated successfully.");
+      toast.success("Project Review saved successfully.");
     } catch (err) {
       setError(err.message);
     } finally {

@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 
@@ -43,6 +44,7 @@ import {
 
 import { useApi } from "../context/ApiContext";
 import { useAdminAuth } from "../context/AdminAuthContext";
+import AdminStatusBadge, { statusLabel } from "./AdminStatusBadge";
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
@@ -609,38 +611,30 @@ export default function BlogAdmin() {
   const [posts, setPosts] = useState([]);
   const [modal, setModal] = useState(null);
   const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+  const [filters, setFilters] = useState({ search: "", status: "" });
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(
     () =>
-      request("/api/admin/blogs", {
+      request(`/api/admin/blogs?${new URLSearchParams(Object.fromEntries(Object.entries({ ...filters, limit: "100" }).filter(([, value]) => value)))}`, {
         cache: "no-store",
       }).then((result) => setPosts(result.data || [])),
-    [request],
+    [request, filters],
   );
 
   useEffect(() => {
+    setLoading(true);
+    setError("");
     refresh()
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [refresh]);
 
-  const filtered = useMemo(
-    () =>
-      posts.filter((post) =>
-        `${post.title} ${post.slug}`
-          .toLowerCase()
-          .includes(search.toLowerCase()),
-      ),
-    [posts, search],
-  );
-
   async function edit(id) {
     setError("");
-    setNotice("");
 
     try {
       const result = await request(`/api/admin/blogs/${id}`, {
@@ -656,7 +650,6 @@ export default function BlogAdmin() {
   async function save(data, bannerBlob) {
     setBusy(true);
     setError("");
-    setNotice("");
 
     try {
       if (
@@ -720,7 +713,7 @@ export default function BlogAdmin() {
       }
 
       setModal(null);
-      setNotice("Blog post saved successfully.");
+      toast.success("Blog post saved successfully.");
 
       await refresh();
     } catch (err) {
@@ -736,12 +729,11 @@ export default function BlogAdmin() {
     }
 
     setError("");
-    setNotice("");
 
     try {
       await request(`/api/admin/blogs/${post._id}`, { method: "DELETE" });
 
-      setNotice("Blog post deleted.");
+      toast.success("Blog post deleted successfully.");
       await refresh();
     } catch (err) {
       setError(err.message);
@@ -773,23 +765,18 @@ export default function BlogAdmin() {
         </button>
       </div>
 
-      <label className="block max-w-lg">
-        <span className="mb-2 block text-sm font-semibold">Search Blogs</span>
-
+      <form className="flex flex-wrap gap-3" onSubmit={event => { event.preventDefault(); setFilters({ search: search.trim(), status }); }}>
         <input
-          className="pc-field w-full rounded-lg border px-3 py-3"
+          className="pc-field min-w-52 flex-1 rounded-lg border px-3 py-3"
           type="search"
           placeholder="Search title or URL"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
-      </label>
-
-      {notice && (
-        <p role="status" className="pc-success p-3">
-          {notice}
-        </p>
-      )}
+        <select className="pc-field rounded-lg border px-3 py-3" value={status} onChange={event => { const value = event.target.value; setStatus(value); setFilters(current => ({ ...current, status: value })); }}><option value="">All statuses</option><option value="draft">{statusLabel("draft")}</option><option value="published">{statusLabel("published")}</option></select>
+        <button type="submit" className="pc-primary px-5 py-3">Search</button>
+        {(filters.search || filters.status) && <button type="button" className="pc-action" onClick={() => { setSearch(""); setStatus(""); setFilters({ search: "", status: "" }); }}>Clear</button>}
+      </form>
 
       {error && !modal && (
         <p role="alert" className="pc-error p-3">
@@ -801,7 +788,7 @@ export default function BlogAdmin() {
         <p>Loading posts...</p>
       ) : (
         <div className="grid gap-3 md:grid-cols-2">
-          {filtered.map((post) => (
+          {posts.map((post) => (
             <article key={post._id} className="pc-card rounded-xl border p-5">
               {post.bannerImage && (
                 <img
@@ -818,13 +805,7 @@ export default function BlogAdmin() {
               <div className="flex items-start justify-between gap-2">
                 <h2 className="font-bold">{post.title}</h2>
 
-                <span
-                  className={`pc-status ${
-                    post.status === "published" ? "published" : ""
-                  }`}
-                >
-                  {post.status}
-                </span>
+                <AdminStatusBadge status={post.status} />
               </div>
 
               <p className="mt-2 break-all text-sm text-slate-500">
@@ -864,7 +845,7 @@ export default function BlogAdmin() {
             </article>
           ))}
 
-          {!filtered.length && (
+          {!posts.length && (
             <p className="pc-card rounded-xl border p-5">
               No blog posts found.
             </p>

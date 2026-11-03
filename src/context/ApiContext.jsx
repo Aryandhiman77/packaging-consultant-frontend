@@ -262,7 +262,7 @@ export function ApiProvider({ children }) {
         }
       });
 
-      return request(`/api/admin/project-reviews?${params}`);
+      return request(`/api/admin/project-reviews?${params}`, { cache: "no-store" });
     },
     [request],
   );

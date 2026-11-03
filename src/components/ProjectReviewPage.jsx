@@ -674,6 +674,15 @@ function ReviewDetail({ step }) {
       const submittedValues = { ...values };
       const data = await submitProjectReview(values, files, setUploadProgress);
 
+      try {
+        const channel = new BroadcastChannel("pc-admin-events");
+        channel.postMessage({ type: "project-review-created" });
+        channel.close();
+        localStorage.setItem("pc-project-review-created", String(Date.now()));
+      } catch {
+        // Submission remains successful when cross-tab refresh is unavailable.
+      }
+
       const reference = data.referenceNumber || data.reference;
       const date = data.submissionDate
         ? new Date(data.submissionDate).toLocaleString()

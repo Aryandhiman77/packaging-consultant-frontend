@@ -11,18 +11,19 @@
     "test:cms": "node --test tests/cmsUploadAdapter.test.mjs"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-react": "11.0.0",
     "@fontsource/anton": "^5.3.0",
     "@vitejs/plugin-react": "latest",
     "axios": "^1.20.0",
     "canvg": "^4.0.3",
+    "ckeditor5": "47.6.2",
     "jspdf": "^4.2.1",
     "react": "latest",
     "react-dom": "latest",
+    "react-hot-toast": "^2.6.1",
     "react-icons": "^5.7.0",
     "react-router-dom": "^7.18.4",
-    "vite": "latest",
-    "ckeditor5": "47.6.2",
-    "@ckeditor/ckeditor5-react": "11.0.0"
+    "vite": "latest"
   },
   "devDependencies": {
     "@tailwindcss/vite": "latest",

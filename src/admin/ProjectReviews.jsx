@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useApi } from "../context/ApiContext";
 import ProjectReviewModal from "./ProjectReviewModal";
 import ReviewStatusBadge, { statusLabel } from "./ReviewStatusBadge";
+import { useAdminNotifications } from "./AdminNotifications";
 
 const statuses = [
   "new",
@@ -14,6 +15,7 @@ const statuses = [
 
 export default function ProjectReviews() {
   const { listProjectReviews } = useApi();
+  const { unread } = useAdminNotifications();
 
   const [filters, setFilters] = useState({
     page: 1,
@@ -62,7 +64,7 @@ export default function ProjectReviews() {
     return () => {
       active = false;
     };
-  }, [filters, refresh, listProjectReviews]);
+  }, [filters, refresh, listProjectReviews, unread.review]);
 
   const { data, pagination } = result;
 
@@ -158,6 +160,18 @@ export default function ProjectReviews() {
         >
           Search
         </button>
+        {(filters.status || filters.search) && (
+          <button
+            type="button"
+            className="rounded-lg border border-slate-300 px-5 py-3 font-bold dark:border-white/[.12]"
+            onClick={() => {
+              setSearchText("");
+              setFilters((current) => ({ ...current, page: 1, status: "", search: "" }));
+            }}
+          >
+            Clear
+          </button>
+        )}
       </form>
 
       {error && (
