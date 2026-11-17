@@ -41,7 +41,7 @@ function SocialLinks({ links, mobile = false }) {
         ["youtube", FaYoutube, "YouTube"],
         ["linkedin", FaLinkedinIn, "LinkedIn"],
       ].map(([key, Icon, label]) =>
-        /^https?:\/\//.test(links[key] || "") ? (
+        links[key] ? (
           <a
             key={key}
             className={`header-social header-social--${key}`}
